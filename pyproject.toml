@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "jaiqu"
+version = "0.0.1"
+authors = [
+  { name = "Alex Reibman", email = "areibman@gmail.com" }
+]
+description = "AI utility to extract data from any JSON and reformat it into a new JSON with repeatable queries."
+readme = "README.md"
+requires-python = ">=3.7"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "jq==1.6.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.4",
+    "flake8>=3.1.0",
+    "coverage[toml]>=7.4.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/AgentOps-AI/tokencost"
+Issues = "https://github.com/AgentOps-AI/tokencost/issues"
