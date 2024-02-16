@@ -1,8 +1,17 @@
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
 from jaiqu import client
+from typing import Optional
 
 
-def identify_key(key, value, input_schema) -> str:
+def to_key(response: str) -> str | None:
+    """Extract the key from the response."""
+    key = response.split('`')[-2]
+    if key == "None":
+        return None
+    return key
+
+
+def identify_key(key, value, input_schema) -> tuple[Optional[str], str]:
     """Identify if a key is present in a schema. This function uses the OpenAI API to generate a response."""
 
     messages = [{
@@ -10,19 +19,20 @@ def identify_key(key, value, input_schema) -> str:
         "content": """You are a perfect system designed to validate and extract data from JSON files. 
 For each field, you provide a short check about your reasoning. Go line by line and do a side by side comparison. For example:
 
-"id" | "id" : The field name is identical. True.
-"time" | "timestamp": This is the same concept, therefore it counts. True.
-"addr" | "Address": This is the same concept and is a , therefore it counts. True.
-"cats" | None: There no matching or remotely similar fields. False.
-"input" | "input": The names match, but the types are different. False.
+"id" | "id" : The field name is identical. Extracted key: `id`
+"Date" | "date" : The field name is the same except for capitalization. Extracted key: `date`
+"time" | "timestamp": This is the same concept, therefore it counts. Extracted key: `timestamp`
+"addr" | "Address": This is the same concept and is a , therefore it counts. Extracted key: `Address`
+"cats" | None: There no matching or remotely similar fields. Extracted key: `None`
+"input" | "input": The names match, but the types are different. Extracted key: `input`
 
 Some fields may not have the exact same names. Use your best judgement about the meaning of the field to determine if they should count.
 
-You come to a definitive conclusion- True or False at the end of your response."""
+You come to a definitive conclusion, the name of the key you found, at the end of your response."""
     },
         {
         "role": "user",
-        "content": f"Is `{key}` of type `{value}` present in the desired schema:\n\n  {input_schema}"
+        "content": f"Is `{key}` of type `{value}` present in the desired schema?:\n\n  {input_schema}"
     }]
 
     reasoning_response = client.chat.completions.create(messages=messages,
@@ -30,7 +40,9 @@ You come to a definitive conclusion- True or False at the end of your response."
                                                         #                                                         logit_bias={2575: 100, 4139: 100},
                                                         #                                                         max_tokens=1
                                                         )
-    return str(reasoning_response.choices[0].message.content)
+    key = to_key(str(reasoning_response.choices[0].message.content))
+
+    return (key, str(reasoning_response.choices[0].message.content))
 
 
 def to_bool(response: str) -> bool:
@@ -50,7 +62,9 @@ Your task is to create a jq filter to extract the data from the following JSON:
 
 You will be given the type of the key you need to extract. Only extract the key that corresponds to the type.
 
-Do NOT extract values based on exact indices.
+* Do NOT extract values based on exact indices.
+* If the key is not present and it is not required, DO NOT extract it. Return the literal value `None`
+
 """
     },
         {

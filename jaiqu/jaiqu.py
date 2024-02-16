@@ -1,7 +1,8 @@
+
 import jq
 from jsonschema import validate
 from jsonschema.exceptions import ValidationError
-from .helpers import identify_key, to_bool, create_jq_string, repair_query, dict_to_jq_filter
+from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_filter
 
 
 def validate_schema(input_json, output_schema):
@@ -9,11 +10,16 @@ def validate_schema(input_json, output_schema):
     results = {}
     valid = True
     for key, value in output_schema['properties'].items():
-        response = identify_key(key, value, input_json)
-        if to_bool(response):
-            results[key] = {"identified": True, "message": response}
+        response_key, response_reasoning = identify_key(key, value, input_json)
+
+        if response_key is not None:
+            results[key] = {"identified": True, "key": response_key,
+                            "message": response_reasoning,
+                            **value}
         else:
-            results[key] = {"identified": False, "message": response}
+            results[key] = {"identified": False, "key": response_key,
+                            "message": response_reasoning,
+                            **value}
         if key in output_schema['required']:
             results[key]['required'] = True
             if results[key]['identified'] == False:
@@ -24,13 +30,24 @@ def validate_schema(input_json, output_schema):
     return results, valid
 
 
-def translate_schema(input_json, output_schema) -> str:
+def translate_schema(input_json, output_schema, max_retries=10) -> str:
     """Translates the output schema into a jq filter to extract the required data from the input json."""
 
+    schema_properties, is_valid = validate_schema(input_json, output_schema)
+    if not is_valid:
+        raise RuntimeError(f"The input JSON does not contain the required data to satisfy the output schema.")
+
+    filtered_schema = {k: v for k, v in schema_properties.items() if v['identified'] == True}
+
+    tries = 0
     filter_query = {}
 
-    for key, value in list(output_schema['properties'].items()):
+    for key, value in filtered_schema.items():
         jq_string = create_jq_string(input_json, key, value)
+
+        if jq_string == "None":  # If the response is empty, skip the key
+            continue
+
         while True:
             print(jq_string)
             query = ""
@@ -38,7 +55,10 @@ def translate_schema(input_json, output_schema) -> str:
                 query = jq.compile(jq_string).input(input_json).all()
                 break
             except Exception as e:
-                continue
+                tries += 1
+                if tries > max_retries:
+                    raise RuntimeError(f"Failed to create a valid jq filter after {max_retries} retries.")
+
         print(query)
         filter_query[key] = jq_string
 
@@ -54,6 +74,9 @@ def translate_schema(input_json, output_schema) -> str:
         except Exception as e:
             print(e)
             print('---')
+            tries += 1
+            if tries > max_retries:
+                raise RuntimeError(f"Failed to create a valid jq filter after {max_retries} retries.")
             complete_filter = repair_query(complete_filter, str(e), input_json)
 
     return complete_filter
