@@ -63,6 +63,7 @@ Your task is to create a jq filter to extract the data from the following JSON:
 You will be given the type of the key you need to extract. Only extract the key that corresponds to the type.
 
 * Do NOT extract values based on exact indices.
+* Do NOT create default values.
 * If the key is not present and it is not required, DO NOT extract it. Return the literal value `None`
 
 """
