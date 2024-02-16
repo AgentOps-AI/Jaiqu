@@ -1,0 +1,41 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+        "id": {
+            "type": ["string", "null"],
+            "description": "A unique identifier for the record."
+        },
+        "thread_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "A UUID representing the thread."
+        },
+        "choices": {
+            "type": "array",
+            "description": "A JSONB object representing the completion."
+        },
+        "model": {
+            "type": "string",
+            "description": "A text field representing the model used."
+        },
+        "prompt_tokens": {
+            "type": "number",
+            "description": "A numeric field representing the number of tokens in the prompt."
+        },
+        "completion_tokens": {
+            "type": "number",
+            "description": "A numeric field representing the number of tokens in the completion."
+        },
+        "init_timestamp": {
+            "type": "string",
+            "format": "date-time",
+            "description": "A timestamp with time zone indicating the initialization time."
+        }
+    },
+    "required": [
+        "id",
+        "choices",
+        "model"
+    ]
+}
