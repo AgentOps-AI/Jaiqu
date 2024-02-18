@@ -13,7 +13,7 @@
         },
         "completion": {
             "type": ["array", "string"],
-            "description": "A JSONB object representing the completion."
+            "description": "A JSONB object or a string representing the completion."
         },
         "model": {
             "type": "string",

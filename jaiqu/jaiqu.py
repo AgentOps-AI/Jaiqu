@@ -1,16 +1,16 @@
 
 import jq
+import json
 from jsonschema import validate
-from jsonschema.exceptions import ValidationError
 from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_filter
 
 
-def validate_schema(input_json, output_schema):
+def validate_schema(input_json, output_schema, key_hints=None) -> tuple[dict, bool]:
     """Validates whether the required data in the output json schema is present in the input json."""
     results = {}
     valid = True
     for key, value in output_schema['properties'].items():
-        response_key, response_reasoning = identify_key(key, value, input_json)
+        response_key, response_reasoning = identify_key(key, value, input_json, key_hints)
 
         if response_key is not None:
             results[key] = {"identified": True, "key": response_key,
@@ -30,12 +30,13 @@ def validate_schema(input_json, output_schema):
     return results, valid
 
 
-def translate_schema(input_json, output_schema, max_retries=10) -> str:
+def translate_schema(input_json, output_schema, key_hints=None,  max_retries=10) -> str:
     """Translates the output schema into a jq filter to extract the required data from the input json."""
 
-    schema_properties, is_valid = validate_schema(input_json, output_schema)
+    schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints)
     if not is_valid:
-        raise RuntimeError(f"The input JSON does not contain the required data to satisfy the output schema.")
+        raise RuntimeError(
+            f"The input JSON does not contain the required data to satisfy the output schema: \n\n{json.dumps(schema_properties, indent=2)}")
 
     filtered_schema = {k: v for k, v in schema_properties.items() if v['identified'] == True}
 
@@ -49,13 +50,13 @@ def translate_schema(input_json, output_schema, max_retries=10) -> str:
             continue
 
         while True:
-            print(jq_string)
             query = ""
             try:
                 query = jq.compile(jq_string).input(input_json).all()
                 break
             except Exception as e:
                 tries += 1
+                jq_string = repair_query(jq_string, str(e), input_json)
                 if tries > max_retries:
                     raise RuntimeError(f"Failed to create a valid jq filter after {max_retries} retries.")
 
@@ -72,8 +73,6 @@ def translate_schema(input_json, output_schema, max_retries=10) -> str:
             validate(instance=result, schema=output_schema)
             break
         except Exception as e:
-            print(e)
-            print('---')
             tries += 1
             if tries > max_retries:
                 raise RuntimeError(f"Failed to create a valid jq filter after {max_retries} retries.")

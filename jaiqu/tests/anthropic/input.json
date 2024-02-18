@@ -1,0 +1,18 @@
+{
+    "id": "msg_018vxZcM9a74Zu2UHqH2mfDd",
+    "content": [
+        {
+            "text": "Sample completion text",
+            "type": "text"
+        }
+    ],
+    "model": "claude-2.1",
+    "role": "assistant",
+    "stop_reason": "end_turn",
+    "stop_sequence": null,
+    "type": "message",
+    "usage": {
+        "input_tokens": 27,
+        "output_tokens": 22
+    }
+}
