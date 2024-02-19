@@ -60,7 +60,6 @@ def translate_schema(input_json, output_schema, key_hints=None,  max_retries=10)
                 if tries > max_retries:
                     raise RuntimeError(f"Failed to create a valid jq filter after {max_retries} retries.")
 
-        print(query)
         filter_query[key] = jq_string
 
     complete_filter = dict_to_jq_filter(filter_query)
@@ -68,8 +67,6 @@ def translate_schema(input_json, output_schema, key_hints=None,  max_retries=10)
     while True:
         try:
             result = jq.compile(complete_filter).input(input_json).all()[0]
-            print(result)
-            print(complete_filter)
             validate(instance=result, schema=output_schema)
             break
         except Exception as e:

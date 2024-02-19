@@ -62,9 +62,9 @@ You come to a definitive conclusion, the name of the key you found, at the end o
                                                         #                                                         logit_bias={2575: 100, 4139: 100},
                                                         #                                                         max_tokens=1
                                                         )
-    key = to_key(str(reasoning_response.choices[0].message.content))
+    completion = str(reasoning_response.choices[0].message.content)
 
-    return (key, str(reasoning_response.choices[0].message.content))
+    return (to_key(completion), completion)
 
 
 def create_jq_string(input_schema, key, value) -> str:
