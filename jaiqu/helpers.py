@@ -80,7 +80,7 @@ You will be given the type of the key you need to extract. Only extract the key 
 
 * Do NOT extract values based on exact indices.
 * Do NOT create default values.
-* If the key is not present and it is not required, DO NOT extract it. Return the literal value `None`
+* If the key is not present and it is not required, DO NOT extract it. Return the literal value `None`. This is NOT a string, but the actual value `None`.
 
 """
     },
