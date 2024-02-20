@@ -1,0 +1,28 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "properties": {
+      "exception.type": {
+        "type": "string",
+        "description": "The type of exception that was thrown"
+      },
+      "exception.message": {
+        "type": "string",
+        "description": "Detailed message describing the exception"
+      },
+      "exception.escaped": {
+        "type": "boolean",
+        "description": "Indicator if the exception has escaped the span's scope"
+      },
+      "exception.stacktrace": {
+        "type": "string",
+        "description": "The stack trace of the exception"
+      }
+    },
+    "required": [
+      "exception.type",
+      "exception.message",
+      "exception.escaped",
+      "exception.stacktrace"
+    ]
+  }
