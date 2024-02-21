@@ -1,9 +1,9 @@
 # Jaiqu
 
-Replicable, AI-generated JSON transformation queries. Transform any JSON into any schema automatically.
-
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![PyPI - Version](https://img.shields.io/pypi/v/tokencost)
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/AgentOpsAI)](https://x.com/agentopsai)
+
+Replicable, AI-generated JSON transformation queries. Transform any JSON into any schema automatically.
 
 Jaiqu is an AI agent for creating repeatable JSON transforms using [jq query language](https://jqlang.github.io/jq/) syntax. Jaiqu translates any arbitrary JSON inputs into any desired schema.
 
