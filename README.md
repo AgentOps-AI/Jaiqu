@@ -1,16 +1,15 @@
-# jaiqu
-Automatically reformat any JSON into any schema with AI
-<img width="813" alt="image" src="https://github.com/AgentOps-AI/Jaiqu/assets/14807319/727d7592-a552-4222-b88e-d9206807198c">
-
-
 # Jaiqu
+
+Replicable, AI-generated JSON transformation queries. Transform any JSON into any schema automatically.
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) ![PyPI - Version](https://img.shields.io/pypi/v/tokencost)
 [![X (formerly Twitter) Follow](https://img.shields.io/twitter/follow/AgentOpsAI)](https://x.com/agentopsai)
 
-AI schema translator for creating repeatable JSON transforms using [jq query language](https://jqlang.github.io/jq/) syntax. 
+Jaiqu is an AI agent for creating repeatable JSON transforms using [jq query language](https://jqlang.github.io/jq/) syntax. Jaiqu translates any arbitrary JSON inputs into any desired schema.
 
-Building AI agents? Check out [AgentOps](https://agentops.ai/?tokencost)
+Building AI agents? Check out [AgentOps](https://agentops.ai/?jaiqu)
 
+![Alt text](architecture.png)
 
 ### Features
 * **Translate any schemam to any schema** AI agent automatically maps data from a source schema to a desired format by iteratively prompting GPT-4 to create valid jq query syntax.
@@ -30,7 +29,7 @@ schema = {
         "id": {
             "type": ["string", "null"],
             "description": "A unique identifier for the record."
-        }
+        },
         "date": {
             "type": "string",
             "description": "A string describing the date."
@@ -100,7 +99,6 @@ jq_query = jaiqu.translate_schema(input_json, schema, key_hints, max_retries=30)
 >>>'{"id": .attributes["call.id"], "date": .datetime}'
 ```
 
-
 ## Installation
 
 #### Recommended: [PyPI](https://pypi.org/project/jaiqu/):
@@ -109,8 +107,25 @@ jq_query = jaiqu.translate_schema(input_json, schema, key_hints, max_retries=30)
 pip install jaiqu
 ```
 
+
 ## Architecture
-TBD
+Unraveling the Jaiqu agentic workflow pattern 
+```mermaid
+flowchart TD
+    A[Start translate_schema] --> B{Validate input schema}
+    B -- Valid --> C[For each key, create a jq filter query]
+    B -- Invalid --> D[Throw RuntimeError]
+    C --> E[Compile and Test jq Filter]
+    E -- Success --> F[Validate JSON]
+    E -- Fail --> G[Retry Create jq Filter]
+    G -- Success --> E
+    G -- Fail n times--> H[Throw RuntimeError]
+    F -- Success --> I[Return jq query string]
+    F -- Fail --> J[Retry Validate JSON]
+    J -- Success --> I
+    J -- Fail n times --> K[Throw RuntimeError]
+```
+
 
 ## Running tests
 

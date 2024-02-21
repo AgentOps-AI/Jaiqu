@@ -52,6 +52,7 @@ def translate_schema(input_json, output_schema, key_hints=None, max_retries=10) 
             jq_string = create_jq_string(input_json, key, value)
 
             if jq_string == "None":  # If the response is empty, skip the key
+                pbar.update(1)
                 continue
 
             tries = 0
@@ -69,6 +70,7 @@ def translate_schema(input_json, output_schema, key_hints=None, max_retries=10) 
             pbar.update(1)
             filter_query[key] = jq_string
         pbar.close()
+        pbar_retries.close()
     complete_filter = dict_to_jq_filter(filter_query)
     # Validate JSON
     tries = 0
@@ -77,10 +79,10 @@ def translate_schema(input_json, output_schema, key_hints=None, max_retries=10) 
             try:
                 result = jq.compile(complete_filter).input(input_json).all()[0]
                 validate(instance=result, schema=output_schema)
+                pbar_validation.close()
                 break
             except Exception as e:
                 tries += 1
-                pbar_retries.update(1)
                 pbar_validation.update(1)
                 if tries >= max_retries:
                     raise RuntimeError(f"Failed to validate the jq filter after {max_retries} retries.")
