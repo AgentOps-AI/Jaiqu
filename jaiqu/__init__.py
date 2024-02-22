@@ -1,9 +1,11 @@
 from openai import OpenAI
+import os
 
-class JaiQu:
-    openai_client = None
+openai_client = None
 
-    @classmethod
-    def init(cls, openai_api_key: str):
-        if cls.openai_client is None:
-            cls.openai_client = OpenAI(api_key=openai_api_key)
+if os.getenv("OPENAI_API_KEY") is not None:
+	openai_client = OpenAI()#OpenAI grabs from environment variable by default
+      
+def set_openai_key(openai_api_key: str):
+    global openai_client
+    openai_client = OpenAI(api_key=openai_api_key)
