@@ -1,7 +1,6 @@
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
-from jaiqu import client
+from jaiqu import JaiQu
 from typing import Optional
-
 
 def to_key(response: str) -> str | None:
     """Extract the key from the response."""
@@ -57,7 +56,7 @@ You come to a definitive conclusion, the name of the key you found, at the end o
         "content": f"Is `{key}` of type `{value}` present in the desired schema?:\n\n  {input_schema}"
     }]
 
-    reasoning_response = client.chat.completions.create(messages=messages,
+    reasoning_response = JaiQu.openai_client.chat.completions.create(messages=messages,
                                                         model="gpt-4",
                                                         #                                                         logit_bias={2575: 100, 4139: 100},
                                                         #                                                         max_tokens=1
@@ -89,7 +88,7 @@ You will be given the type of the key you need to extract. Only extract the key 
         "content": f"Write jq to extract the key `{key}`of type `{value['type']}`"
     }]
 
-    response = client.chat.completions.create(messages=messages, model="gpt-4-0125-preview")
+    response = JaiQu.openai_client.chat.completions.create(messages=messages, model="gpt-4-0125-preview")
     return str(response.choices[0].message.content)
 
 
@@ -107,7 +106,7 @@ Query: {query}
 Error: {error}
 
 Schema: {input_schema}"""}]
-    response = client.chat.completions.create(messages=messages,
+    response = JaiQu.openai_client.chat.completions.create(messages=messages,
                                               model="gpt-4-0125-preview")
     return str(response.choices[0].message.content)
 

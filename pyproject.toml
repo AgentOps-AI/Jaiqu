@@ -17,7 +17,9 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "jq==1.6.0"
+    "jq==1.6.0",
+    "openai~=1.12.0",
+    "jsonschema==4.21.1"
 ]
 
 [project.optional-dependencies]
@@ -28,5 +30,5 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/AgentOps-AI/tokencost"
-Issues = "https://github.com/AgentOps-AI/tokencost/issues"
+Homepage = "https://github.com/AgentOps-AI/Jaiqu"
+Issues = "https://github.com/AgentOps-AI/Jaiqu/issues"
