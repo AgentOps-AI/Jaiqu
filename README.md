@@ -12,7 +12,7 @@ Building AI agents? Check out [AgentOps](https://agentops.ai/?jaiqu)
 ![Alt text](architecture.png)
 
 ### Features
-* **Translate any schemam to any schema** AI agent automatically maps data from a source schema to a desired format by iteratively prompting GPT-4 to create valid jq query syntax.
+* **Translate any schema to any schema** AI agent automatically maps data from a source schema to a desired format by iteratively prompting GPT-4 to create valid jq query syntax.
 * **Schema validation** Given a requirement schema, automatically validate whether the required data is present in the input json.
 * **Fuzzy term matching** Infers keys based on symantic similarity (i.e. datetime vs date_time). GPT-4 automaticlaly maps and translates input keys to desired output keys.
 
@@ -59,12 +59,12 @@ input_json = {
 }
 
 # (Optional) Create hints so the agent knows what to look for in the input
-key_hints="We are processing outputs of an containing an id, a date, and a model. All the required fields should be present in this input, but the names might be different.
+key_hints="We are processing outputs of an containing an id, a date, and a model. All the required fields should be present in this input, but the names might be different."
 ```
 
 Validating an input json contains all the information required in a schema
 ```python
-schema_properties, valid = jaiqu.validate_schema(input_json, schema, key_hints)
+schema_properties, valid = validate_schema(input_json, schema, key_hints)
 
 print(schema_properties)
 
