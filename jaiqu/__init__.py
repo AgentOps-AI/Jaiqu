@@ -1,6 +1,8 @@
 from openai import OpenAI
+from .jaiqu import validate_schema, translate_schema
 
-class JaiQu:
+
+class LLM:
     openai_client = None
 
     @classmethod
