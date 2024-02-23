@@ -7,8 +7,17 @@ from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_fi
 
 
 def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints=None) -> tuple[dict, bool]:
-    """Validates whether the required data in the output json schema is present in the input json."""
-    """The input and output json should already be parsed into a dictionary"""
+    """Validates the schema of the input JSON against the output schema.
+    Args:
+        input_json (dict): The input JSON parsed into a dictionary.
+        output_schema (dict): The output schema against which the input JSON schema needs to be validated.
+        openai_api_key (str | None, optional): The OpenAI API key. Defaults to None.
+        key_hints (any, optional): Key hints to assist in identifying keys. Defaults to None.
+
+    Returns:
+        tuple[dict, bool]: A tuple containing the results of the validation and a boolean indicating if the validation was successful.
+    """
+
     results = {}
     valid = True
     with tqdm(total=len(output_schema['properties']), desc="Validating schema") as pbar:
@@ -36,7 +45,24 @@ def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str |
 
 
 def translate_schema(input_json, output_schema, openai_api_key: str | None = None, key_hints=None, max_retries=10) -> str:
-    """Translates the output schema into a jq filter to extract the required data from the input json."""
+    """
+    Translate the input JSON schema into a filtering query using jq.
+
+    Args:
+        input_json (dict): The input JSON to be reformatted.
+        output_schema (dict): The desired output schema using standard schema formatting.
+        openai_api_key (str, optional): OpenAI API key. Defaults to None.
+        key_hints (None, optional): Hints for translating keys. Defaults to None.
+        max_retries (int, optional): Maximum number of retries for creating a valid jq filter. Defaults to 10.
+
+    Returns:
+        str: The filtering query in jq syntax.
+
+    Raises:
+        RuntimeError: If the input JSON does not contain the required data to satisfy the output schema.
+        RuntimeError: If failed to create a valid jq filter after maximum retries.
+        RuntimeError: If failed to validate the jq filter after maximum retries.
+    """
 
     schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints)
     if not is_valid:
