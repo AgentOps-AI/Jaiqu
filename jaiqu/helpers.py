@@ -1,9 +1,9 @@
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
-from typing import Optional
+from typing import Optional, Union
 from openai import OpenAI
 
 
-def to_key(response: str) -> str | None:
+def to_key(response: str) -> Union[str, None]:
     """Extract the key from the response."""
     key = response.split('`')[-2]
     if key == "None":
