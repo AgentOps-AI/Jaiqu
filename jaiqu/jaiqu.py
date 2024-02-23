@@ -6,7 +6,7 @@ from tqdm.auto import tqdm  # Use the auto submodule for notebook-friendly outpu
 from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_filter
 
 
-def validate_schema(input_json: dict, output_schema: dict, open_ai_api_key: str, key_hints=None) -> tuple[dict, bool]:
+def validate_schema(input_json: dict, output_schema: dict, open_ai_api_key: str | None = None, key_hints=None) -> tuple[dict, bool]:
     """Validates whether the required data in the output json schema is present in the input json."""
     """The input and output json should already be parsed into a dictionary"""
     results = {}
