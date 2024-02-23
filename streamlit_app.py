@@ -3,6 +3,7 @@ import json
 import jq
 import os
 from jaiqu import validate_schema, translate_schema
+from agentops import Client
 
 # Set page layout to wide
 st.set_page_config(layout="wide", page_title="Jaiqu: AI JSON Schema to JQ Query Generator")
@@ -94,13 +95,16 @@ with opt_col2:
 # Validate schema
 if st.button('Validate Schema', key="validate_schema"):
     with st.spinner('Validating schema...'):
+        validation_session = Client(tags=["jaiqu", "schema-validation"])
         schema_properties, valid = validate_schema(input_json, schema, key_hints)
         st.write('Schema is valid:', valid)
         st.json(schema_properties, expanded=False)
+        validation_session.end_session('Success' if valid else 'Fail', end_state_reason='Schema validation complete')
 
 # Translate schema
 if st.button('Translate Schema', key="translate_schema"):
     with st.spinner('Translating schema...'):
+        translation_session = Client(tags=["jaiqu", "schema-translation"])
         jq_query = translate_schema(input_json, schema, key_hints=key_hints, max_retries=int(max_retries))
         st.text('Finalized jq query')
         st.code(jq_query, language="jq")
@@ -108,8 +112,11 @@ if st.button('Translate Schema', key="translate_schema"):
         with st.spinner('Checking the jq query results...'):
             # Check the jq query results
             st.text('JQ query results')
-            result = jq.compile(jq_query).input(input_json).all()[0]
-            st.write(result)
-            st.text('JQ query results')
-            result = jq.compile(jq_query).input(input_json).all()[0]
-            st.write(result)
+            try:
+                result = jq.compile(jq_query).input(input_json).all()[0]
+                st.write(result)
+                translation_session.end_session('Success', end_state_reason='Schema translation complete')
+
+            except Exception as e:
+                st.error(f"Error: {e}")
+                translation_session.end_session('Fail', end_state_reason='Schema translation failed')
