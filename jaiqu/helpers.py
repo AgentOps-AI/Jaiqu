@@ -11,7 +11,7 @@ def to_key(response: str) -> Union[str, None]:
     return key
 
 
-def identify_key(key, value, input_schema, api_key=None, key_hints=None) -> tuple[Optional[str], str]:
+def identify_key(key, value, input_schema, openai_api_key=None, key_hints=None) -> tuple[Optional[str], str]:
     """Identify if a key is present in a schema. This function uses the OpenAI API to generate a response."""
 
     system_message = """You are a perfect system designed to validate and extract data from JSON files. 
@@ -57,7 +57,7 @@ You come to a definitive conclusion, the name of the key you found, at the end o
         "content": f"Is `{key}` of type `{value}` present in the desired schema?:\n\n  {input_schema}"
     }]
 
-    reasoning_response = OpenAI(api_key).chat.completions.create(messages=messages,
+    reasoning_response = OpenAI(openai_api_key).chat.completions.create(messages=messages,
                                                           model="gpt-4",
                                                           #                                                         logit_bias={2575: 100, 4139: 100},
                                                           #                                                         max_tokens=1
@@ -67,7 +67,7 @@ You come to a definitive conclusion, the name of the key you found, at the end o
     return to_key(completion), completion
 
 
-def create_jq_string(input_schema, key, value, api_key) -> str:
+def create_jq_string(input_schema, key, value, openai_api_key) -> str:
     messages: list[ChatCompletionMessageParam] = [{
         "role": "system",
         "content": f"""You are a perfect jq engineer designed to validate and extract data from JSON files using jq. Only reply with code. Do NOT use any natural language. Do NOT use markdown i.e. ```.
@@ -89,11 +89,11 @@ You will be given the type of the key you need to extract. Only extract the key 
         "content": f"Write jq to extract the key `{key}`of type `{value['type']}`"
     }]
 
-    response = OpenAI(api_key).chat.completions.create(messages=messages, model="gpt-4-0125-preview")
+    response = OpenAI(openai_api_key).chat.completions.create(messages=messages, model="gpt-4-0125-preview")
     return str(response.choices[0].message.content)
 
 
-def repair_query(query, error, input_schema, api_key):
+def repair_query(query, error, input_schema, openai_api_key):
     messages: list[ChatCompletionMessageParam] = [{
         "role": "system",
                 "content": "You are a perfect jq engineer designed to validate and extract data from JSON files using jq. Only reply with code. Do NOT use any natural language. Do NOT use markdown i.e. ```."
@@ -107,7 +107,7 @@ Query: {query}
 Error: {error}
 
 Schema: {input_schema}"""}]
-    response = OpenAI(api_key).chat.completions.create(messages=messages,
+    response = OpenAI(openai_api_key).chat.completions.create(messages=messages,
                                                 model="gpt-4-0125-preview")
     return str(response.choices[0].message.content)
 
