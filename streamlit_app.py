@@ -1,13 +1,30 @@
 import streamlit as st
 import json
 import jq
+import os
 from jaiqu import validate_schema, translate_schema
 
 # Set page layout to wide
-st.set_page_config(layout="wide")
+st.set_page_config(layout="wide", page_title="Jaiqu: AI JSON Schema to JQ Query Generator")
 
-# Title of the app
-st.title('Jaiqu: JSON Schema to JQ Query')
+# Custom styles for Streamlit elements
+st.markdown(
+    """
+    <style>
+    .stTextArea {
+        border: 2px solid #4CAF50;
+        border-radius: 5px;
+        padding: 10px; /* Increased padding */
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
+# Title of the app with custom color
+st.markdown("<h1 style='text-align: center; color: #4CAF50; padding: 0 1rem;'>Jaiqu: AI Schema to JQ Query Generator</h1>",
+            unsafe_allow_html=True)  # Added horizontal padding to the title
 
 st.header('Desired data format')
 col1, col2 = st.columns(2)
@@ -57,33 +74,42 @@ with col2:
     input_json = json.loads(input_json_str)
     st.json(input_json, expanded=False)
 
-st.write("---")  # This adds a horizontal line (break) in the Streamlit app
+st.markdown("<hr style='border-top: 3px solid #bbb; border-radius: 5px; margin: 0 1rem;'/>",  # Added horizontal margin to the horizontal line
+            unsafe_allow_html=True)
 
 st.header('Optional Inputs')
 opt_col1, opt_col2 = st.columns(2)
 
 with opt_col1:
-    key_hints = st.text_input('Enter any hints for key mapping',
-                              value="We are processing outputs of an containing an id and a date of a user.")
+    key_hints = st.text_area('Enter any hints for key mapping',
+                             value="We are processing outputs of an containing an id and a date of a user.", height=100)
 
 with opt_col2:
-    max_retries = st.number_input('Set maximum retries for translation', min_value=1, value=20, format="%d")
+    max_retries = st.number_input('Set maximum retries for translation', min_value=1,
+                                  value=20, format="%d")
+    openai_api_key = st.text_input('Enter your OpenAI API key', type="password")
+    if openai_api_key:
+        os.environ['OPENAI_API_KEY'] = openai_api_key
 
 # Validate schema
-if st.button('Validate Schema'):
+if st.button('Validate Schema', key="validate_schema"):
     with st.spinner('Validating schema...'):
         schema_properties, valid = validate_schema(input_json, schema, key_hints)
         st.write('Schema is valid:', valid)
         st.json(schema_properties, expanded=False)
 
 # Translate schema
-if st.button('Translate Schema'):
+if st.button('Translate Schema', key="translate_schema"):
     with st.spinner('Translating schema...'):
         jq_query = translate_schema(input_json, schema, key_hints=key_hints, max_retries=int(max_retries))
         st.text('Finalized jq query')
-        st.code(jq_query)
+        st.code(jq_query, language="jq")
 
         with st.spinner('Checking the jq query results...'):
             # Check the jq query results
-            result = jq.compile(jq_query).input(input_json).all()
+            st.text('JQ query results')
+            result = jq.compile(jq_query).input(input_json).all()[0]
+            st.write(result)
+            st.text('JQ query results')
+            result = jq.compile(jq_query).input(input_json).all()[0]
             st.write(result)
