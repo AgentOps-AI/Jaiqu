@@ -6,7 +6,7 @@ from tqdm.auto import tqdm  # Use the auto submodule for notebook-friendly outpu
 from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_filter
 
 
-def validate_schema(input_json: dict, output_schema: dict, key_hints=None) -> tuple[dict, bool]:
+def validate_schema(input_json: dict, output_schema: dict, open_ai_api_key: str, key_hints=None) -> tuple[dict, bool]:
     """Validates whether the required data in the output json schema is present in the input json."""
     """The input and output json should already be parsed into a dictionary"""
     results = {}
@@ -14,7 +14,7 @@ def validate_schema(input_json: dict, output_schema: dict, key_hints=None) -> tu
     with tqdm(total=len(output_schema['properties']), desc="Validating schema") as pbar:
         for key, value in output_schema['properties'].items():
             pbar.set_postfix_str(f"Key: {key}", refresh=True)
-            response_key, response_reasoning = identify_key(key, value, input_json, key_hints)
+            response_key, response_reasoning = identify_key(key, value, input_json, open_ai_api_key, key_hints)
 
             if response_key is not None:
                 results[key] = {"identified": True, "key": response_key,
@@ -35,7 +35,7 @@ def validate_schema(input_json: dict, output_schema: dict, key_hints=None) -> tu
         return results, valid
 
 
-def translate_schema(input_json, output_schema, key_hints=None, max_retries=10) -> str:
+def translate_schema(input_json, output_schema, open_ai_key, key_hints=None, max_retries=10) -> str:
     """Translates the output schema into a jq filter to extract the required data from the input json."""
 
     schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints)
@@ -50,7 +50,7 @@ def translate_schema(input_json, output_schema, key_hints=None, max_retries=10) 
     with tqdm(total=len(filtered_schema), desc="Translating schema") as pbar, tqdm(total=max_retries, desc="Retry attempts") as pbar_retries:
         for key, value in filtered_schema.items():
             pbar.set_postfix_str(f"Key: {key}", refresh=True)
-            jq_string = create_jq_string(input_json, key, value)
+            jq_string = create_jq_string(input_json, key, value, open_ai_key)
 
             if jq_string == "None":  # If the response is empty, skip the key
                 pbar.update(1)
