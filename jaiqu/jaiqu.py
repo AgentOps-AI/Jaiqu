@@ -64,7 +64,7 @@ def translate_schema(input_json, output_schema, openai_api_key: str | None = Non
         RuntimeError: If failed to validate the jq filter after maximum retries.
     """
 
-    schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints)
+    schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints=key_hints, openai_api_key=openai_api_key)
     if not is_valid:
         raise RuntimeError(
             f"The input JSON does not contain the required data to satisfy the output schema: \n\n{json.dumps(schema_properties, indent=2)}")
