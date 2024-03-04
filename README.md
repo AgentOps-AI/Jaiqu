@@ -9,7 +9,10 @@ Jaiqu is an AI agent for creating repeatable JSON transforms using [jq query lan
 
 Building AI agents? Check out [AgentOps](https://agentops.ai/?jaiqu)
 
+[Video Overview](https://youtu.be/exbV35-XWA0)
+
 ![Alt text](architecture.png)
+
 
 ### Features
 * **Translate any schema to any schema** AI agent automatically maps data from a source schema to a desired format by iteratively prompting GPT-4 to create valid jq query syntax.
