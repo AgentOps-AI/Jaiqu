@@ -88,20 +88,31 @@ with opt_col2:
     max_retries = st.number_input('Set maximum retries for translation', min_value=1,
                                   value=20, format="%d")
     openai_api_key = st.text_input('Enter your OpenAI API key', type="password")
-    if openai_api_key:
-        os.environ['OPENAI_API_KEY'] = openai_api_key
 
 # Validate schema
 if st.button('Validate Schema', key="validate_schema"):
+
+    if not openai_api_key:
+        st.error("Please provide your OpenAI API key to validate the schema.")
+        st.stop()
+
     with st.spinner('Validating schema...'):
-        schema_properties, valid = validate_schema(input_json, schema, key_hints)
+        schema_properties, valid = validate_schema(input_json, schema,
+                                                   openai_api_key=openai_api_key, key_hints=key_hints)
         st.write('Schema is valid:', valid)
         st.json(schema_properties, expanded=False)
 
 # Translate schema
 if st.button('Translate Schema', key="translate_schema"):
     with st.spinner('Translating schema...'):
-        jq_query = translate_schema(input_json, schema, key_hints=key_hints, max_retries=int(max_retries))
+
+        if not openai_api_key:
+            st.error("Please provide your OpenAI API key to translate the schema.")
+            st.stop()
+
+        jq_query = translate_schema(input_json, schema,
+                                    openai_api_key=openai_api_key,
+                                    key_hints=key_hints, max_retries=int(max_retries))
         st.text('Finalized jq query')
         st.code(jq_query, language="jq")
 
