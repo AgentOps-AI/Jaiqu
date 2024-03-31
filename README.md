@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="https://github.com/AgentOps-AI/Jaiqu/blob/8d4c66b2603bf14fedd2bf4c615c8919f79ece9f/jaiqu.png" height="300" alt="Tarsier Monkey" />
+  <img src="https://github.com/AgentOps-AI/Jaiqu/blob/8d4c66b2603bf14fedd2bf4c615c8919f79ece9f/jaiqu.png" height="300" alt="Jaiqu" />
 </p>
 <p align="center">
   <em>Natural language to DSL agent for JSON querying</em>
 </p>
 <p align="center">
-    <a href="https://pypi.org/project/tarsier/" target="_blank">
+    <a href="https://pypi.org/project/jaiqu/" target="_blank">
         <img alt="Python" src="https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54" />
         <img alt="Version" src="https://img.shields.io/pypi/v/jaiqu?style=for-the-badge&color=3670A0">
     </a>
@@ -16,6 +16,7 @@
 <a href="https://twitter.com/agentopsai/">🐦 Twitter</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="https://discord.gg/JHPt4C7r">📢 Discord</a>
+<span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="https://agentops.ai/?jaiqu">🖇️ AgentOps</a>
 </p>
 
