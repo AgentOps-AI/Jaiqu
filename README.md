@@ -16,6 +16,7 @@
 <a href="https://twitter.com/agentopsai/">🐦 Twitter</a>
 <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
 <a href="https://discord.gg/JHPt4C7r">📢 Discord</a>
+<a href="https://agentops.ai/?jaiqu">🖇️ AgentOps</a>
 </p>
 
 # Jaiqu
