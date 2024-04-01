@@ -38,3 +38,6 @@ Issues = "https://github.com/AgentOps-AI/Jaiqu/issues"
 
 [project.entry-points.console_scripts]
 jaiqu = "jaiqu.cli:main"
+
+[tool.setuptools]
+packages = { find = { where = ["."], exclude = ["samples"] } }
