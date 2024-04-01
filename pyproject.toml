@@ -21,7 +21,8 @@ classifiers = [
 dependencies = [
     "jq==1.6.0",
     "openai~=1.12.0",
-    "jsonschema==4.21.1"
+    "jsonschema==4.21.1",
+    "typer==0.9.0",
 ]
 
 [project.optional-dependencies]
@@ -34,3 +35,6 @@ dev = [
 [project.urls]
 Homepage = "https://github.com/AgentOps-AI/Jaiqu"
 Issues = "https://github.com/AgentOps-AI/Jaiqu/issues"
+
+[project.entry-points.console_scripts]
+jaiqu = "jaiqu.cli:main"

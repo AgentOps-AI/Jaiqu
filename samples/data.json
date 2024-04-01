@@ -1,0 +1,11 @@
+{
+    "call.id": "123",
+    "datetime": "2022-01-01",
+    "timestamp": 1640995200,
+    "Address": "123 Main St",
+    "user": {
+        "name": "John Doe",
+        "age": 30,
+        "contact": "john@email.com"
+    }
+}
