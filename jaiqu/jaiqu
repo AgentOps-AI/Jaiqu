@@ -1,0 +1,15 @@
+digraph {
+	graph [compound=false concentrate=false rankdir=TB ranksep=0.4]
+	validate_schema [label=validate_schema shape=box style=rounded]
+	create_jq_filter_query [label=create_jq_filter_query shape=box style=rounded]
+	validate_json [label=validate_json shape=box style=rounded]
+	error_state [label=error_state shape=box style=rounded]
+	good_result [label=good_result shape=box style=rounded]
+	validate_schema -> create_jq_filter_query [style=solid]
+	create_jq_filter_query -> validate_json [label="'exit' in question" style=dashed]
+	validate_json -> good_result [label=valid_json style=dashed]
+	validate_schema -> good_result [label=valid_schema style=dashed]
+	validate_schema -> error_state [label="not valid_schema" style=dashed]
+	create_jq_filter_query -> error_state [label=max_retries_hit style=dashed]
+	validate_json -> error_state [label=max_retries_hit style=dashed]
+}

@@ -1,12 +1,12 @@
-
 import jq
 import json
 from jsonschema import validate
 from tqdm.auto import tqdm  # Use the auto submodule for notebook-friendly output if necessary
-from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_filter
+from helpers import identify_key, create_jq_string, repair_query, dict_to_jq_filter
 
 
-def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints=None) -> tuple[dict, bool]:
+def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints=None) -> tuple[
+    dict, bool]:
     """Validates the schema of the input JSON against the output schema.
     Args:
         input_json (dict): The input JSON parsed into a dictionary.
@@ -44,7 +44,8 @@ def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str |
         return results, valid
 
 
-def translate_schema(input_json, output_schema, openai_api_key: str | None = None, key_hints=None, max_retries=10) -> str:
+def translate_schema(input_json, output_schema, openai_api_key: str | None = None, key_hints=None,
+                     max_retries=10) -> str:
     """
     Translate the input JSON schema into a filtering query using jq.
 
@@ -64,7 +65,8 @@ def translate_schema(input_json, output_schema, openai_api_key: str | None = Non
         RuntimeError: If failed to validate the jq filter after maximum retries.
     """
 
-    schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints=key_hints, openai_api_key=openai_api_key)
+    schema_properties, is_valid = validate_schema(input_json, output_schema, key_hints=key_hints,
+                                                  openai_api_key=openai_api_key)
     if not is_valid:
         raise RuntimeError(
             f"The input JSON does not contain the required data to satisfy the output schema: \n\n{json.dumps(schema_properties, indent=2)}")
@@ -73,7 +75,9 @@ def translate_schema(input_json, output_schema, openai_api_key: str | None = Non
 
     filter_query = {}
 
-    with tqdm(total=len(filtered_schema), desc="Translating schema") as pbar, tqdm(total=max_retries, desc="Retry attempts") as pbar_retries:
+    with tqdm(total=len(filtered_schema),
+              desc="Translating schema") as pbar, tqdm(total=max_retries,
+                                                       desc="Retry attempts") as pbar_retries:
         for key, value in filtered_schema.items():
             pbar.set_postfix_str(f"Key: {key}", refresh=True)
             jq_string = create_jq_string(input_json, key, value, openai_api_key)
@@ -114,5 +118,5 @@ def translate_schema(input_json, output_schema, openai_api_key: str | None = Non
                 if tries >= max_retries:
                     raise RuntimeError(f"Failed to validate the jq filter after {max_retries} retries.")
                 complete_filter = repair_query(complete_filter, str(e), input_json, openai_api_key)
-        pbar.close()
+        pbar_validation.close()
     return complete_filter

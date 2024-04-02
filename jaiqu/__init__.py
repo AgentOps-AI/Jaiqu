@@ -1,1 +1,1 @@
-from .jaiqu import validate_schema, translate_schema
+# from .jaiqu import validate_schema, translate_schema
