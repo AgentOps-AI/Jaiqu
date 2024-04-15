@@ -13,7 +13,8 @@ from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_fi
 logger = logging.getLogger(__name__)
 
 
-def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints=None, quiet=False) -> tuple[dict, bool]:
+def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints=None,
+                    quiet=False) -> tuple[dict, bool]:
     """Validates the schema of the input JSON against the output schema.
     Args:
         input_json (dict): The input JSON parsed into a dictionary.
@@ -147,8 +148,8 @@ def validate_json(state: State) -> tuple[dict, State]:
     return {"complete_filter": complete_filter}, state
 
 
-def translate_schema(input_json, output_schema, openai_api_key: str | None = None, key_hints=None,
-                     max_retries=10, quiet=False, save_trace: bool = False) -> str:
+def translate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints: str = None,
+                     max_retries: int = 10, quiet: bool = False, save_trace: bool = False) -> str:
     """
         Translate the input JSON schema into a filtering query using jq.
 
@@ -156,7 +157,7 @@ def translate_schema(input_json, output_schema, openai_api_key: str | None = Non
             input_json (dict): The input JSON to be reformatted.
             output_schema (dict): The desired output schema using standard schema formatting.
             openai_api_key (str, optional): OpenAI API key. Defaults to None.
-            key_hints (None, optional): Hints for translating keys. Defaults to None.
+            key_hints (str, optional): Hints for translating keys. Defaults to None.
             max_retries (int, optional): Maximum number of retries for creating a valid jq filter. Defaults to 10.
             quiet (bool, optional): Quiet mode to turn off TQDM progress bars. Defaults to False.
             save_trace (bool, optional): turn on Burr tracking to debug jaiqu runs. Defaults to False.
