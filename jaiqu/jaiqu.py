@@ -13,7 +13,7 @@ from .helpers import identify_key, create_jq_string, repair_query, dict_to_jq_fi
 logger = logging.getLogger(__name__)
 
 
-def validate_schema(input_json, output_schema, openai_api_key: str | None = None, key_hints=None, quiet=False):
+def validate_schema(input_json: dict, output_schema: dict, openai_api_key: str | None = None, key_hints=None, quiet=False) -> tuple[dict, bool]:
     """Validates the schema of the input JSON against the output schema.
     Args:
         input_json (dict): The input JSON parsed into a dictionary.
@@ -47,6 +47,7 @@ def validate_schema(input_json, output_schema, openai_api_key: str | None = None
             else:
                 results[key]['required'] = False
             pbar.update(1)
+
     return results, valid
 
 
