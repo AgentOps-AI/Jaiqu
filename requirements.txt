@@ -1,4 +1,4 @@
 jq==1.6.0
 openai>=1.12.0,<2.0.0
 jsonschema==4.21.1
-burr
+burr~=0.*  # install everything until 1.0.0

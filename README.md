@@ -123,7 +123,7 @@ print(valid)
 
 Creating a repeatable jq query for extracitng data from identically formatted input JSONs
 ```python
-jq_query = jaiqu.translate_schema(input_json, schema, key_hints, max_retries=30)
+jq_query = translate_schema(input_json, schema, key_hints, max_retries=30)
 >>>'{"id": .attributes["call.id"], "date": .datetime}'
 ```
 
@@ -137,22 +137,8 @@ pip install jaiqu
 
 
 ## Architecture
-Unraveling the Jaiqu agentic workflow pattern 
-```mermaid
-flowchart TD
-    A[Start translate_schema] --> B{Validate input schema}
-    B -- Valid --> C[For each key, create a jq filter query]
-    B -- Invalid --> D[Throw RuntimeError]
-    C --> E[Compile and Test jq Filter]
-    E -- Success --> F[Validate JSON]
-    E -- Fail --> G[Retry Create jq Filter]
-    G -- Success --> E
-    G -- Fail n times--> H[Throw RuntimeError]
-    F -- Success --> I[Return jq query string]
-    F -- Fail --> J[Retry Validate JSON]
-    J -- Success --> I
-    J -- Fail n times --> K[Throw RuntimeError]
-```
+Unraveling the Jaiqu agentic workflow pattern:
+![jaiqu](jaiqu_app.png)
 
 
 ## Running tests
