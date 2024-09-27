@@ -139,8 +139,8 @@ jaiqu -s schema.json -d data.json
 # Retry attempts:  20%|███████████████████▌                     | 2/10 [00:02<00:11,  1.46s/it]
 # Validation attempts:  10%|█████████▎                          | 1/10 [00:00<00:08,  1.02it/s]
 
-# Query:           { "id": (.["call.id"] // null | tostring), "date": (.["datetime"] // null) }
-# Full completion: jq '{ "id": (.["call.id"] // null | tostring), "date": (.["datetime"] // null) }' data.json
+jq '{ "id": (if .["call.id"] then .["call.id"] else null end), "date": (if has("datetime") then .datetime else "None" end) }' data.json
+# Run command?
 # [E]xecute, [A]bort: e
 # {
 #   "id": "123",
