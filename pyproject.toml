@@ -36,7 +36,8 @@ dev = [
 Homepage = "https://github.com/AgentOps-AI/Jaiqu"
 Issues = "https://github.com/AgentOps-AI/Jaiqu/issues"
 
-[project.entry-points.console_scripts]
+# [project.entry-points.console_scripts]
+[project.scripts]
 jaiqu = "jaiqu.cli:main"
 
 [tool.setuptools]
