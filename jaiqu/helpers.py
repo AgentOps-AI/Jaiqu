@@ -1,6 +1,13 @@
+import os
+import platform
+import shlex
+
 from openai.types.chat.chat_completion_message_param import ChatCompletionMessageParam
 from typing import Optional, Union
 from openai import OpenAI
+
+# jaiqu doesn't seem to consistently work with gpt-4-turbo or gpt-4o-mini
+OPENAI_MODEL = "gpt-4o"
 
 
 def to_key(response: str) -> Union[str, None]:
@@ -58,9 +65,7 @@ You come to a definitive conclusion, the name of the key you found, at the end o
     }]
 
     reasoning_response = OpenAI(api_key=openai_api_key).chat.completions.create(messages=messages,
-                                                          model="gpt-4",
-                                                          #                                                         logit_bias={2575: 100, 4139: 100},
-                                                          #                                                         max_tokens=1
+                                                          model=OPENAI_MODEL,
                                                           )
     completion = str(reasoning_response.choices[0].message.content)
 
@@ -89,7 +94,7 @@ You will be given the type of the key you need to extract. Only extract the key 
         "content": f"Write jq to extract the key `{key}`of type `{value['type']}`"
     }]
 
-    response = OpenAI(api_key=openai_api_key).chat.completions.create(messages=messages, model="gpt-4-0125-preview")
+    response = OpenAI(api_key=openai_api_key).chat.completions.create(messages=messages, model=OPENAI_MODEL)
     return str(response.choices[0].message.content)
 
 
@@ -108,7 +113,7 @@ Error: {error}
 
 Schema: {input_schema}"""}]
     response = OpenAI(api_key=openai_api_key).chat.completions.create(messages=messages,
-                                                model="gpt-4-0125-preview")
+                                                model=OPENAI_MODEL)
     return str(response.choices[0].message.content)
 
 
@@ -122,3 +127,23 @@ def dict_to_jq_filter(transformation_dict) -> str:
     # Join all parts with commas and wrap in braces to form a valid jq object filter
     jq_filter = "{ " + ",\n ".join(jq_filter_parts) + " }"
     return jq_filter
+
+
+def run_command(command: str) -> None:
+    """
+    Runs a command in the user's shell.
+    It is aware of the current user's $SHELL.
+    :param command: A shell command to run.
+    """
+    if platform.system() == "Windows":
+        is_powershell = len(os.getenv("PSModulePath", "").split(os.pathsep)) >= 3
+        full_command = (
+            f'powershell.exe -Command "{command}"'
+            if is_powershell
+            else f'cmd.exe /c "{command}"'
+        )
+    else:
+        shell = os.environ.get("SHELL", "/bin/sh")
+        full_command = f"{shell} -c {shlex.quote(command)}"
+
+    os.system(full_command)

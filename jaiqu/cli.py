@@ -1,9 +1,12 @@
 import json
 import sys
 
+import typer
 from typer import Option, Typer
+from click.types import Choice
 
 from .jaiqu import translate_schema
+from .helpers import run_command
 
 typer_app = Typer()
 
@@ -55,7 +58,17 @@ def jaiqu(
         max_retries=max_retries,
         quiet=quiet
     )
-    print(query)
+    full_completion = f"jq '{query}' {data_file}"
+    print(f"\n{full_completion}\nRun command?")
+    option = typer.prompt(
+        text="[E]xecute, [A]bort",
+        type=Choice(("e", "a"), case_sensitive=False),
+        default="e",
+        show_choices=False,
+        show_default=False,
+    )
+    if option in ("e"):
+        run_command(full_completion)
 
 
 def main():

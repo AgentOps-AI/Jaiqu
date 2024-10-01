@@ -127,6 +127,29 @@ jq_query = jaiqu.translate_schema(input_json, schema, key_hints, max_retries=30)
 >>>'{"id": .attributes["call.id"], "date": .datetime}'
 ```
 
+### CLI Usage
+
+```bash
+git clone https://github.com/AgentOps-AI/Jaiqu.git
+cd Jaiqu/samples/
+
+jaiqu -s schema.json -d data.json
+# Validating schema: 100%|███████████████████████████| 3/3 [00:11<00:00,  3.73s/it, Key: model]
+# Translating schema: 100%|███████████████████████████| 2/2 [00:02<00:00,  1.46s/it, Key: date]
+# Retry attempts:  20%|███████████████████▌                     | 2/10 [00:02<00:11,  1.46s/it]
+# Validation attempts:  10%|█████████▎                          | 1/10 [00:00<00:08,  1.02it/s]
+
+jq '{ "id": (if .["call.id"] then .["call.id"] else null end), "date": (if has("datetime") then .datetime else "None" end) }' data.json
+# Run command?
+# [E]xecute, [A]bort: e
+# {
+#   "id": "123",
+#   "date": "2022-01-01"
+# }
+```
+
+> Note: usage is currently limited to python 3.9 & 3.10
+
 ## Installation
 
 #### Recommended: [PyPI](https://pypi.org/project/jaiqu/):

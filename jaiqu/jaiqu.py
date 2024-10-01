@@ -78,7 +78,8 @@ def translate_schema(input_json, output_schema, openai_api_key: str | None = Non
             pbar.set_postfix_str(f"Key: {key}", refresh=True)
             jq_string = create_jq_string(input_json, key, value, openai_api_key)
 
-            if jq_string == "None":  # If the response is empty, skip the key
+            # If the response is empty, skip the key
+            if jq_string == "None":
                 pbar.update(1)
                 continue
 
