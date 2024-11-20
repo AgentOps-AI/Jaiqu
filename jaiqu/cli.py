@@ -33,6 +33,12 @@ def jaiqu(
         "--max-retries",
         help="Max number of retries for the ai to complete the task",
     ),
+    save_trace: bool = Option(
+        False,
+        "-s",
+        "--save-trace",
+        help="Saves a trace for introspection using the Burr UI.",
+    ),
 ):
     """
     Validate and translate a json schema to jq filter
@@ -56,7 +62,8 @@ def jaiqu(
         input_json=input_json,
         key_hints=key_hints,
         max_retries=max_retries,
-        quiet=quiet
+        quiet=quiet,
+        save_trace=save_trace,
     )
     full_completion = f"jq '{query}' {data_file}"
     print(f"\n{full_completion}\nRun command?")

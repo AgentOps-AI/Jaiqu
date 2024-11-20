@@ -72,7 +72,7 @@ You come to a definitive conclusion, the name of the key you found, at the end o
     return to_key(completion), completion
 
 
-def create_jq_string(input_schema, key, value, openai_api_key) -> str:
+def create_jq_string(input_schema, key, value, openai_api_key=None) -> str:
     messages: list[ChatCompletionMessageParam] = [{
         "role": "system",
         "content": f"""You are a perfect jq engineer designed to validate and extract data from JSON files using jq. Only reply with code. Do NOT use any natural language. Do NOT use markdown i.e. ```.
