@@ -20,7 +20,7 @@ classifiers = [
 ]
 dependencies = [
     "jq==1.6.0",
-    "openai",
+    "openai>=1.63.2",
     "jsonschema==4.21.1",
     "typer==0.9.0",
 ]
