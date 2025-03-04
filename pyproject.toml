@@ -23,6 +23,7 @@ dependencies = [
     "openai>=1.63.2",
     "jsonschema==4.21.1",
     "typer==0.9.0",
+    "burr~=0.*",
 ]
 
 [project.optional-dependencies]
@@ -30,6 +31,7 @@ dev = [
     "pytest>=7.4.4",
     "flake8>=3.1.0",
     "coverage[toml]>=7.4.0",
+    "burr[start]~=0.*",
 ]
 
 [project.urls]
