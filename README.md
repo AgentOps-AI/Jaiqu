@@ -42,7 +42,7 @@ Building AI agents? Check out [AgentOps](https://agentops.ai/?jaiqu)
 ### Features
 * **Translate any schema to any schema** AI agent automatically maps data from a source schema to a desired format by iteratively prompting GPT-4 to create valid jq query syntax.
 * **Schema validation** Given a requirement schema, automatically validate whether the required data is present in the input json.
-* **Fuzzy term matching** Infers keys based on symantic similarity (i.e. datetime vs date_time). GPT-4 automaticlaly maps and translates input keys to desired output keys.
+* **Fuzzy term matching** Infers keys based on symantic similarity (i.e. datetime vs date_time). GPT-4 automatically maps and translates input keys to desired output keys.
 
 ### Example usage:
 
